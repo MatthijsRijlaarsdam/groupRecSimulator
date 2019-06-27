@@ -34,10 +34,12 @@ def run_session(args):
         recommender.add_ratings(new_ratings)
     # print(recommender.check_approval(ratio_agreement))
     # print("took {} swipes".format(len(recommender.new_ratings)))
-    return pd.DataFrame([[len(recommender.new_ratings),len(recommender.new_ratings)/group_size, rating_threshold, random_movie_ratio, group_size,
+    return pd.DataFrame([[len(recommender.new_ratings), len(recommender.new_ratings) / group_size, rating_threshold,
+                          random_movie_ratio, group_size,
                           ratio_agreement, movies_per_refresh,
                           movie_names.loc[movie_names.movieId == recommender.check_approval(ratio_agreement)].title]],
-                        columns=['number_of_swipes','swipes/user', 'rating_threshold', 'random_movie_ratio', 'group_size',
+                        columns=['number_of_swipes', 'swipes/user', 'rating_threshold', 'random_movie_ratio',
+                                 'group_size',
                                  'ratio_agreement',
                                  'movies_per_refresh', 'recommended_movie'])
 
@@ -75,19 +77,25 @@ if __name__ == '__main__':
     algo.reg_all = 0.2
 
     with Pool(processes=multiprocessing.cpu_count()) as pool:
+        # the minimal rating for a user to want to watch a movie
         _rating_threshold = 4
+        # the amount of movies a user gets recommended before updating the model with new swipes
         _movies_per_refresh = 10
-
+        # ratio of the movies per refresh that is random vs already rated by other users
         random_movie_ratio_range = np.arange(0.2, 1.1, .2)
+        # the group sizes to test
         group_size_range = range(5, 15)
+        # the minimal fraction of the grooup that needs to agree for a certain movie
         ratio_agreement_range = np.arange(1, 1.1, .25)
+        # the amount of runs per setting
         n = 100
 
         total_sessions = len(random_movie_ratio_range) * len(group_size_range) * len(ratio_agreement_range) * n
         print("running {} sessions".format(total_sessions))
 
         res = pd.DataFrame(
-            columns=['number_of_swipes','swipes/user', 'rating_threshold', 'random_movie_ratio', 'group_size', 'ratio_agreement',
+            columns=['number_of_swipes', 'swipes/user', 'rating_threshold', 'random_movie_ratio', 'group_size',
+                     'ratio_agreement',
                      'movies_per_refresh', 'recommended_movie'])
 
         _user_simulator = User_simulator(algo, df, _rating_threshold)
@@ -100,11 +108,11 @@ if __name__ == '__main__':
                     for _ratio_agreement in ratio_agreement_range:
                         run_arguments.append(
                             [_recommender, _user_simulator, _group_size, _random_movie_ratio, _ratio_agreement,
-                              _movies_per_refresh,_rating_threshold])
+                             _movies_per_refresh, _rating_threshold])
 
         res = []
         for session_res in pool.imap_unordered(run_session, run_arguments):
-            print("\r{}/{}".format(len(res)+1, total_sessions), end="")
+            print("\r{}/{}".format(len(res) + 1, total_sessions), end="")
             res.append(session_res)
 
         res = pd.concat(res, sort=False)
