@@ -23,7 +23,7 @@ def run_session(args):
 
     group = random.sample(list(test_users), group_size)
     recommender.new_session(random_movie_ratio)
-    while not recommender.check_approval(ratio_agreement) and not len(recommender.new_ratings) > group_size * 50:
+    while not recommender.check_approval(ratio_agreement) and not len(recommender.new_ratings) > group_size * 500:
         # print("new swipe round")
         new_ratings = pd.DataFrame(columns=['userId', 'movieId', 'rating'])
 
@@ -80,12 +80,12 @@ if __name__ == '__main__':
         # the minimal rating for a user to want to watch a movie
         _rating_threshold = 4
         # the amount of movies a user gets recommended before updating the model with new swipes
-        _movies_per_refresh = 10
+        _movies_per_refresh = 2
         # ratio of the movies per refresh that is random vs already rated by other users
-        random_movie_ratio_range = np.arange(0.2, 1.1, .2)
+        random_movie_ratio_range = [0.5]
         # the group sizes to test
         group_size_range = range(5, 15)
-        # the minimal fraction of the grooup that needs to agree for a certain movie
+        # the minimal fraction of the group that needs to agree for a certain movie
         ratio_agreement_range = np.arange(1, 1.1, .25)
         # the amount of runs per setting
         n = 100
@@ -116,4 +116,4 @@ if __name__ == '__main__':
             res.append(session_res)
 
         res = pd.concat(res, sort=False)
-        res.to_excel("result_final_groupsize.xlsx")
+        res.to_excel("result_final_infinite_run.xlsx")
