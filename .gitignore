@@ -106,3 +106,6 @@ venv.bak/
 .idea/*
 *.iml
 ml-20m/*
+
+result*
+ml-latest-small/*
