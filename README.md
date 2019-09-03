@@ -1,8 +1,8 @@
-# netflix-met-veel
+# groupRecSimulator
 Dependencies:
 suprise, pandas, numpy, openpyxl
 
-Netflix met veel simulates users using an app that provides a swiping interface with movies to groups of users, in order to find the best recommendation to watch for that group.
+groupRecSimulator simulates users using an app that provides a swiping interface with movies to groups of users, in order to find the best recommendation to watch for that group.
 It is meant to simulate the effects of various parameters on the performance of the application.
 
 It is optimised for speed and parallelized. 
